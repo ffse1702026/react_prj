@@ -1,0 +1,10 @@
+.notify-error {
+    text-align: center;
+    color: red;
+    display: none;
+}
+
+.validate-input {
+    text-align: center;
+    margin-top: -15px;
+}
