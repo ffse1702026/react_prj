@@ -4,12 +4,12 @@ var authDialog = {
     setDialog: function(successCallback, errorCallback) {
         cordova.exec(successCallback,
                     errorCallback,
-                    'AuthRequestHandler', 'setDialog');
+                    'AuthDialog', 'setDialog', []);
     },
     clearDialog: function (successCallback, errorCallback) {
         cordova.exec(successCallback,
                     errorCallback,
-                    'AuthRequestHandler', 'clearDialog'
+                    'AuthDialog', 'clearDialog', []
         );
     },
 

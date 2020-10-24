@@ -1,6 +1,6 @@
 import { Component, OnInit, NgZone, Injector } from '@angular/core';
 import { Router } from '@angular/router';
-import { LOG_CLSF, SECTION, AREA_DATA, USER_INFO_KEY, USERID, PushInfo, TRANCODE, COMMON_APP_SERVICE_NAME, SYOKUINCODE_KEY, PASSWORD } from './common/constant';
+import { LOG_CLSF, SECTION, AREA_DATA, USER_INFO_KEY, USERID, PushInfo, TRANCODE, COMMON_APP_SERVICE_NAME, SYOKUINCODE_KEY, PASSWORD, ReturnInfo } from './common/constant';
 import { AppComponentService } from './app.component.service';
 import { NGXLogger } from 'ngx-logger';
 import { LogMonitor } from './log-monitor';
@@ -11,8 +11,12 @@ import { LoadingService } from './screen/loading/loading.service';
 import { WebCommunication } from './service/web-communication/web-communication';
 import { SharedDataUtil } from './common/shareddata.util';
 import { DialogComponent, DialogType } from './screen/dialog/dialog.component';
-import { DIFFERENT_USERID } from './common/message';
+import { DIFFERENT_USERID, FAILED_TO_COMMUNICATE_WITH_SERVER, SESSION_EXPIRED } from './common/message';
 import { MatDialog } from '@angular/material';
+import { HttpClient } from '@angular/common/http';
+import { catchError, map } from 'rxjs/operators';
+import { from } from 'rxjs';
+import { Observable } from 'rxjs/internal/Observable';
 
 export let InjectorInstance: Injector;
 
@@ -42,7 +46,8 @@ export class AppComponent implements OnInit {
     private ngZone: NgZone,
     private loading: LoadingService,
     private webComunication: WebCommunication,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private http: HttpClient
   ) {
     InjectorInstance = this.injector;
     this.logger.registerMonitor(new LogMonitor());
@@ -61,12 +66,7 @@ export class AppComponent implements OnInit {
     SharedData.getInstance().putCommonData(SECTION.OneTimeInfo, 'OnePassword', '');
   }
   async ngOnInit() {
-    authDialog.setDialog((success) => {
-      console.log('SUCESSS');
-      
-    }, (error) => {
-      console.log('SUCESSS');
-    })
+    
   }
 
   back() {
@@ -80,6 +80,40 @@ export class AppComponent implements OnInit {
    * on Devide Ready
    */
   onDeviceReady() {
+    new Promise((resol, rej) => {
+      authDialog.setDialog((success) => {
+        console.log('SUCESSSssssssssss');
+        resol();
+        
+      }, (error) => {
+        console.log('eRRORRRRRRRRR');
+        rej();
+      })
+    }).then(() => {
+
+      new Promise((resolv, reje) => { 
+        authDialog.clearDialog((success) => {
+          console.log('clear SUCESSSssssssssss');
+          resolv();
+          
+        }, (error) => {
+          console.log('clear eRRORRRRRRRRR');
+          reje();
+        })
+      }).then(() => {
+        console.log('====================================');
+        console.log('CALL API');
+        console.log('====================================');
+        this.sessionCheck().subscribe(result => {
+          console.log('====================================');
+          console.log('result', result);
+          console.log('====================================');
+        });
+      });
+    })
+    
+
+    
     // check permission
     this.appComSer.hasReadPermission();
     // when receive notification
@@ -174,6 +208,49 @@ export class AppComponent implements OnInit {
       // if not login redirect to login
       this.ngZone.run(() => this.router.navigate(['/spla']));
     }
+  }
+
+ /**
+   * check Session
+   */
+  public sessionCheck(): Observable<number> {
+
+    // call api /sessioncheck
+    return this.http.get(`http://192.168.1.5:8080/rest/users`).pipe(
+      map(res => {
+        console.log('====================================');
+        console.log('success', res);
+        console.log('====================================');
+          // check if status is 0
+          return ReturnInfo.SUCESS;
+      }),
+      catchError(error => {
+        console.log('====================================');
+        console.log('error', error);
+        console.log('====================================');
+        if (error.status === 302) {
+          // check HttpStatus is 302
+          const dialogVerUp = DialogComponent.openDialog(this.dialog, {
+            type: DialogType.ERROR,
+            messages: [SESSION_EXPIRED]
+          });
+          dialogVerUp.afterClosed().subscribe(() => {
+            navigator.app.exitApp();
+          })
+          return from([ReturnInfo.REDIRECT]);
+        } else {
+          // check HttpStatus is not 200 and 302
+          this.ngZone.run(() => {
+            const dialogVerUp = DialogComponent.openDialog(this.dialog, {
+              type: DialogType.ERROR,
+              messages: [FAILED_TO_COMMUNICATE_WITH_SERVER]
+            });
+          });
+          return from([ReturnInfo.FAILED_TO_COMMUNICATION_SERVER]);
+        }
+
+      })
+    );
   }
 
 }

@@ -14,6 +14,8 @@ import android.util.Log;
 import java.net.HttpCookie;
 
 import android.webkit.CookieManager;
+import android.content.Intent;
+import android.os.Bundle;
 
 public class AuthRequestHandler extends CordovaPlugin {
 
@@ -25,11 +27,21 @@ public class AuthRequestHandler extends CordovaPlugin {
         LOG.d(LOG_TAG, "action = " + action);
         if (action.equals("setDialog")) {
             showDialog = true;
+            Bundle bundle = new Bundle();
+            bundle.putString("username", "sang");
+            bundle.putString("password", "nguyen");
+            Intent intent = this.cordova.getActivity().getIntent();
+            intent.putExtras(bundle);
+            // this.cordova.getActivity().setIntent(intent);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, 0));
             return true;
 
         } else if (action.equals("clearDialog")) {
             showDialog = false;
+            Intent intent = this.cordova.getActivity().getIntent();
+            Bundle bundle = intent.getExtras();
+            intent.removeExtra("username");
+            bundle.remove("username");
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, 0));
             return true;
         }
@@ -39,23 +51,28 @@ public class AuthRequestHandler extends CordovaPlugin {
     }
  
     public boolean onReceivedHttpAuthRequest(CordovaWebView view, final ICordovaHttpAuthHandler handler, String host, String realm) {
-        LOG.d(LOG_TAG, "aconReceivedHttpAuthRequesttion = " + showDialog);
-        AuthenticationDialog dialog = new AuthenticationDialog(cordova.getActivity(), host, realm);
+        Intent intent = this.cordova.getActivity().getIntent();
+        Bundle bundle = intent.getExtras();
+        String username = bundle.getString("username");
+        String password = bundle.getString("password");
+        LOG.d(LOG_TAG, "aconReceivedHttpAuthRequesttion = " + showDialog + " -- username: " + username + " --- password: " + password);
+        // AuthenticationDialog dialog = new AuthenticationDialog(cordova.getActivity(), host, realm);
 
-        dialog.setOkListener(new AuthenticationDialog.OkListener() {
-            public void onOk(String host, String realm, String username, String password) {
-                handler.proceed(username, password);
-            }
-        });
+        // dialog.setOkListener(new AuthenticationDialog.OkListener() {
+        //     public void onOk(String host, String realm, String username, String password) {
+        //         handler.proceed(username, password);
+        //     }
+        // });
 
-        dialog.setCancelListener(new AuthenticationDialog.CancelListener() {
-            public void onCancel() {
-                handler.cancel();
-            }
-        });
+        // dialog.setCancelListener(new AuthenticationDialog.CancelListener() {
+        //     public void onCancel() {
+        //         handler.cancel();
+        //     }
+        // });
 
-        dialog.show();
+        // dialog.show();
         
+        handler.cancel();
         return true;
     }
 }
