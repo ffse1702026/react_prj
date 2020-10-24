@@ -52,28 +52,16 @@ public class AuthRequestHandler extends CordovaPlugin {
     }
  
     public boolean onReceivedHttpAuthRequest(CordovaWebView view, final ICordovaHttpAuthHandler handler, String host, String realm) {
+        LOG.d(LOG_TAG, "aconReceivedHttpAuthRequesttion = " + " -- username: " + username + " --- password: " + password);
         Intent intent = this.cordova.getActivity().getIntent();
         Bundle bundle = intent.getExtras();
         String username = bundle.getString(USERNAME_AUTH);
         String password = bundle.getString(PASSWORD_AUTH);
-        LOG.d(LOG_TAG, "aconReceivedHttpAuthRequesttion = " + " -- username: " + username + " --- password: " + password);
-        // AuthenticationDialog dialog = new AuthenticationDialog(cordova.getActivity(), host, realm);
-
-        // dialog.setOkListener(new AuthenticationDialog.OkListener() {
-        //     public void onOk(String host, String realm, String username, String password) {
-        //         handler.proceed(username, password);
-        //     }
-        // });
-
-        // dialog.setCancelListener(new AuthenticationDialog.CancelListener() {
-        //     public void onCancel() {
-        //         handler.cancel();
-        //     }
-        // });
-
-        // dialog.show();
-        
-        handler.cancel();
+        if(username != null && password != null) {
+            handler.proceed(username, password);
+        } else {
+            handler.cancel();
+        }
         return true;
     }
 }
