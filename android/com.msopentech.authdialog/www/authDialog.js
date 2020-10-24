@@ -1,15 +1,15 @@
 cordova.define("com.msopentech.authdialog.authDialog", function(require, exports, module) {
 var authDialog = {
 
-    setDialog: function(successCallback, errorCallback) {
+    setAuthenication: function(username, password, successCallback, errorCallback) {
         cordova.exec(successCallback,
                     errorCallback,
-                    'AuthDialog', 'setDialog', []);
+                    'AuthDialog', 'setAuthenication', [username, password]);
     },
-    clearDialog: function (successCallback, errorCallback) {
+    clearAuthenication: function (successCallback, errorCallback) {
         cordova.exec(successCallback,
                     errorCallback,
-                    'AuthDialog', 'clearDialog', []
+                    'AuthDialog', 'clearAuthenication', []
         );
     },
 

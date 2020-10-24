@@ -20,32 +20,33 @@ import android.os.Bundle;
 public class AuthRequestHandler extends CordovaPlugin {
 
     protected static final String LOG_TAG = "AuthRequestHandler";
-    public static boolean showDialog = false;
-
+    protected static final String SET_AUTHENICATION = "setAuthenication";
+    protected static final String CLEAR_AUTHENICATION = "clearAuthenication";
+    protected static final String USERNAME_AUTH = "usernameBasicAuth";
+    protected static final String PASSWORD_AUTH = "passwordBasicAuth";
+    protected static final String INVALID = "Invalid action";
     @Override
     public boolean execute(String action, JSONArray args, final CallbackContext callbackContext) throws JSONException {
         LOG.d(LOG_TAG, "action = " + action);
-        if (action.equals("setDialog")) {
-            showDialog = true;
+        if (action.equals(SET_AUTHENICATION)) {
+            final String username = args.getString(0);
+            final String password = args.getString(1);
             Bundle bundle = new Bundle();
-            bundle.putString("username", "sang");
-            bundle.putString("password", "nguyen");
+            bundle.putString(USERNAME_AUTH, username);
+            bundle.putString(PASSWORD_AUTH, password);
             Intent intent = this.cordova.getActivity().getIntent();
             intent.putExtras(bundle);
             // this.cordova.getActivity().setIntent(intent);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, 0));
             return true;
 
-        } else if (action.equals("clearDialog")) {
-            showDialog = false;
+        } else if (action.equals(CLEAR_AUTHENICATION)) {
             Intent intent = this.cordova.getActivity().getIntent();
-            Bundle bundle = intent.getExtras();
-            intent.removeExtra("username");
-            bundle.remove("username");
+            intent.removeExtra(USERNAME_AUTH);
             callbackContext.sendPluginResult(new PluginResult(PluginResult.Status.OK, 0));
             return true;
         }
-        callbackContext.error("Invalid action");
+        callbackContext.error(INVALID);
         return false;
 
     }
@@ -53,9 +54,9 @@ public class AuthRequestHandler extends CordovaPlugin {
     public boolean onReceivedHttpAuthRequest(CordovaWebView view, final ICordovaHttpAuthHandler handler, String host, String realm) {
         Intent intent = this.cordova.getActivity().getIntent();
         Bundle bundle = intent.getExtras();
-        String username = bundle.getString("username");
-        String password = bundle.getString("password");
-        LOG.d(LOG_TAG, "aconReceivedHttpAuthRequesttion = " + showDialog + " -- username: " + username + " --- password: " + password);
+        String username = bundle.getString(USERNAME_AUTH);
+        String password = bundle.getString(PASSWORD_AUTH);
+        LOG.d(LOG_TAG, "aconReceivedHttpAuthRequesttion = " + " -- username: " + username + " --- password: " + password);
         // AuthenticationDialog dialog = new AuthenticationDialog(cordova.getActivity(), host, realm);
 
         // dialog.setOkListener(new AuthenticationDialog.OkListener() {

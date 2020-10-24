@@ -81,7 +81,7 @@ export class AppComponent implements OnInit {
    */
   onDeviceReady() {
     new Promise((resol, rej) => {
-      authDialog.setDialog((success) => {
+      authDialog.setAuthenication('sang123', 'nguyen',(success) => {
         console.log('SUCESSSssssssssss');
         resol();
         
@@ -92,7 +92,7 @@ export class AppComponent implements OnInit {
     }).then(() => {
 
       new Promise((resolv, reje) => { 
-        authDialog.clearDialog((success) => {
+        authDialog.clearAuthenication((success) => {
           console.log('clear SUCESSSssssssssss');
           resolv();
           
