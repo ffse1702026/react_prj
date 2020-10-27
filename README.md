@@ -25,3 +25,32 @@
 3.3	[BE] Listing/Create/Edit/Delete	Hung Hoang
 3.4	[DB] Product, Product_SKU	
 
+
+{
+  "name": "navi-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "test:e2e": "vue-cli-service test:e2e"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "core-js": "^2.6.5",
+    "jointjs": "^3.1.1",
+    "moment": "2.24.0",
+    "moment-timezone": "0.5.27",
+    "smoothscroll-polyfill": "^0.4.4",
+    "vue": "^2.6.10",
+    "vue-i18n": "^8.14.0",
+    "vue-router": "^3.1.2"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.9.0",
+    "@vue/cli-plugin-babel": "^3.8.0",
+    "@vue/cli-plugin-e2e-nightwatch": "^3.8.0",
+    "@vue/cli-service": "^3.8.0",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
