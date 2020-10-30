@@ -54,3 +54,19 @@
     "vue-template-compiler": "^2.6.10"
   }
 }
+<script> " //
+            + "SELECT DISTINCT " //
+            + "  \"SEIBUN_CD\", " //
+            + "  \"SEIBUN_NM\", " //
+            + "  \"SIKIBETU\" " //
+            + "FROM " //
+            + "  TEC_M_SEIBUN " //
+            + "WHERE " //
+            + "  \"SIKIBETU\" IN " //
+            + "  <foreach item='sikibetu' collection='sikibetuList' " //
+            + "   open='(' separator=',' close=')'>" //
+            + "    #{sikibetu} " //
+            + "  </foreach> " //
+            + "ORDER BY " //
+            + "  \"SEIBUN_CD\" ASC " //
+            + "</script> 
