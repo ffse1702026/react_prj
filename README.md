@@ -148,3 +148,7 @@
 		assertThat(insertedIssue.getUpDate(), is(nullValue()));
 		assertThat(insertedIssue.getDelFlg(), is("0"));
 
+
+given() //
+				.multiPart(new MultiPartSpecBuilder(new File(uploadFilePath))
+						.fileName("error_unsupported_navi_upload_file.csv").controlName("file").build())
