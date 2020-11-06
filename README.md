@@ -180,3 +180,16 @@ given() //
 					.body("get(2).level3Group", equalTo(false)) //
 					.body("get(2).level3DefaultCode", equalTo("")) //
 					.body("get(2).level1Count", equalTo(0)) //
+					
+					import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.fail;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
