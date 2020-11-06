@@ -152,3 +152,31 @@
 given() //
 				.multiPart(new MultiPartSpecBuilder(new File(uploadFilePath))
 						.fileName("error_unsupported_navi_upload_file.csv").controlName("file").build())
+						
+						
+						given() //
+					.get("/api/navi/category-names").then() //
+					.statusCode(200) //
+					.assertThat().header("Cache-Control", "no-cache") //
+					.body("get.size()", is(3)) //
+					.body("get(0).categoryId", equalTo(1)) //
+					.body("get(0).categoryTerm", equalTo("trouble")) //
+					.body("get(0).categoryLabel", equalTo("{\"ja\": \"トラブルシュートナビ\"}")) //
+					.body("get(0).level1Group", equalTo(false)) //
+					.body("get(0).level1DefaultCode", equalTo("")) //
+					.body("get(0).level1Count", equalTo(2)) //
+					.body("get(0).level2Count", equalTo(2)) //
+					.body("get(0).level3Count", equalTo(2)) //
+					.body("get(1).categoryId", equalTo(2)) //
+					.body("get(1).categoryTerm", equalTo("failure")) //
+					.body("get(1).categoryLabel", equalTo("{\"ja\": \"故障ナビ\"}")) //
+					.body("get(1).level2Group", equalTo(false)) //
+					.body("get(1).level2DefaultCode", equalTo("")) //
+					.body("get(1).level1Count", equalTo(1)) //
+					.body("get(1).level2Count", equalTo(1)) //
+					.body("get(2).categoryId", equalTo(3)) //
+					.body("get(2).categoryTerm", equalTo("task")) //
+					.body("get(2).categoryLabel", equalTo("{\"ja\": \"調査ナビ\"}")) //
+					.body("get(2).level3Group", equalTo(false)) //
+					.body("get(2).level3DefaultCode", equalTo("")) //
+					.body("get(2).level1Count", equalTo(0)) //
